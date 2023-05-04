@@ -1,0 +1,72 @@
+La sobrecarga de información o infobesity es un término que se refiere a la situación en la que una persona o una organización enfrenta un exceso de información, lo que dificulta la toma de decisiones efectivas y puede causar estrés y ansiedad. Con el auge de internet y las redes sociales, el problema de la sobrecarga informativa se ha vuelto cada vez más común y urgente.
+
+Para abordar esta problemática, es necesario utilizar técnicas de análisis de datos y procesamiento de lenguaje natural (NLP) para extraer información valiosa de grandes conjuntos de datos y determinar la opinión general en torno a la sobrecarga de información. Aquí es donde entra en juego el código de Python.
+
+El código de Python proporciona una manera eficaz de analizar grandes conjuntos de datos y extraer información útil. En el contexto de la sobrecarga informativa, el código de Python puede ayudar a identificar las palabras clave más comunes, las tendencias y los patrones en los datos, y realizar un análisis de sentimiento básico para entender la opinión general en torno a la sobrecarga informativa.
+
+A continuación, se presenta un algoritmo paso a paso que explica cómo se puede utilizar el código de Python para abordar la problemática de la sobrecarga informativa:
+
+    Cargar el archivo de texto que se quiere analizar.
+
+    Tokenizar el texto en palabras y oraciones utilizando la biblioteca NLTK.
+
+    Eliminar las stop words del texto utilizando la biblioteca NLTK.
+
+    Realizar un análisis de frecuencia de palabras para identificar las palabras clave más comunes.
+
+    Realizar un análisis de sentimiento utilizando el analizador de sentimiento de NLTK para determinar la opinión general en torno a la sobrecarga informativa.
+
+    Presentar los resultados en una forma legible para el usuario.
+    
+    En resumen, el código de Python es una herramienta valiosa para abordar la problemática de la sobrecarga informativa, ya que permite analizar grandes conjuntos de datos y extraer información útil para ayudar a tomar decisiones efectivas y comprender mejor la opinión general sobre el tema.
+    
+    El código: 
+    
+    import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+# Descarga las stop words (palabras comunes que se eliminan en el análisis)
+nltk.download('stopwords')
+
+# Descarga el analizador de sentimiento
+nltk.download('vader_lexicon')
+
+# Cargar el archivo de texto a analizar
+with open('archivo.txt', 'r') as file:
+    text = file.read()
+
+# Tokenizar el texto en palabras y oraciones
+words = word_tokenize(text.lower())
+sentences = sent_tokenize(text)
+
+# Eliminar las stop words del texto
+stop_words = set(stopwords.words('english'))
+filtered_words = [word for word in words if word.casefold() not in stop_words]
+
+# Realizar un análisis de frecuencia de palabras
+freq_dist = nltk.FreqDist(filtered_words)
+print(freq_dist.most_common(10)) # Muestra las 10 palabras más comunes en el texto
+
+# Realizar un análisis de sentimiento
+sia = SentimentIntensityAnalyzer()
+sentiment_scores = [sia.polarity_scores(sentence) for sentence in sentences]
+positive_scores = [score['pos'] for score in sentiment_scores]
+negative_scores = [score['neg'] for score in sentiment_scores]
+neutral_scores = [score['neu'] for score in sentiment_scores]
+
+# Calcular el sentimiento general del texto
+positive_sentiment = sum(positive_scores) / len(sentences)
+negative_sentiment = sum(negative_scores) / len(sentences)
+neutral_sentiment = sum(neutral_scores) / len(sentences)
+
+print("Sentimiento general del texto:")
+print("Positivo: {:.2f}%".format(positive_sentiment * 100))
+print("Negativo: {:.2f}%".format(negative_sentiment * 100))
+print("Neutro: {:.2f}%".format(neutral_sentiment * 100))
+
+
+Este código cargará el archivo de texto archivo.txt y realizará un análisis de las 10 palabras más comunes y un análisis de sentimiento básico. Este análisis puede ayudar a entender mejor la problemática de la sobrecarga informativa y la opinión general sobre el tema.
+
+Puede verlo en el  colab:https://colab.research.google.com/drive/1FcfZMqJI3VzXFytGqFR4FknD735R4dXs?usp=sharing 

@@ -15,6 +15,13 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
 
     constructor() ERC721("FU3", "FU3") {}
 
+    struct Player {
+        uint8 speed,
+        
+    }   
+
+    mapping (uint256 => Player) private playerInfo;
+
     function pause() public onlyOwner {
         _pause();
     }

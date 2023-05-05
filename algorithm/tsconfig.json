@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "outDir": "bin",
+    "lib": ["ES2020", "DOM"]
+  },
+  "exclude": ["node_modules", "**/*.spec.ts"],
+  "include": ["src/**/*"]
+}

@@ -16,12 +16,22 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
     constructor() ERC721("FU3", "FU3") {}
 
     struct Player {
-        uint8 speed,
-        
+        uint8 ritm;
+        uint8 shoot;
+        uint8 pass;
+        uint8 dodge;
+        uint8 defense;
+        uint8 physic;
+        uint8 stretch;
+        uint8 stop;
+        uint8 reflex;
+        uint8 keeperSpeed;
+        uint8 kick;
+        uint8 positioning;
     }   
-
+    //mappint PlayerNFT ID with player properties
     mapping (uint256 => Player) private playerInfo;
-
+    mapping (uint256 => bool) private allowed;
     function pause() public onlyOwner {
         _pause();
     }
@@ -30,11 +40,12 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         _unpause();
     }
 
-    function safeMint(address to, string memory uri) public onlyOwner {
+    function safeMint(address to, string memory uri, Player memory _player) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
+        playerInfo[tokenId] = _player;
     }
 
     function _beforeTokenTransfer(
@@ -59,10 +70,22 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
     ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
     }
-
     function supportsInterface(
         bytes4 interfaceId
     ) public view override(ERC721, ERC721Enumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
+    }
+    //Player's Functions
+    function readProperties (uint256 _tokenId) external view returns (Player memory) {
+        require(_isApprovedOrOwner(_msgSender(), _tokenId), "Caller must be the Token owner");
+        return playerInfo[_tokenId];
+    } 
+    //Functions called by Owner to approve modify player stats
+    function editPlayerStats (uint256 _tokenId, Player memory _player, address _sender) public onlyOwner{
+        modifyPlayerStats(_tokenId, _player, _sender);
+    }
+    function modifyPlayerStats (uint256 _tokenId, Player memory _player, address _sender) internal {
+        require(_isApprovedOrOwner(_sender, _tokenId), "Caller must be the Token owner");
+        playerInfo[_tokenId] = _player;
     }
 }

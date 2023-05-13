@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity >=0.7.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-
 // PUSH Comm Contract Interface
 interface IPUSHCommInterface {
     function sendNotification(address _channel, address _recipient, bytes calldata _identity) external;
@@ -16,18 +15,6 @@ interface IPUSHCommInterface {
 
 contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
     using Counters for Counters.Counter;
-
-    Counters.Counter private _tokenIdCounter;
-
-    // EPNS COMM ADDRESS ON ETHEREUM goerli, CHECK THIS: https://docs.epns.io/developers/developer-tooling/epns-smart-contracts/epns-contract-addresses
-    //Goerli
-    address private EPNS_COMM_ADDRESS;
-
-
-    constructor() ERC721("FU3", "FU3") {
-        EPNS_COMM_ADDRESS = 0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa;
-    }
-
     struct Player {
         uint8 ritm;
         uint8 shoot;
@@ -41,18 +28,46 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         uint8 keeperSpeed;
         uint8 kick;
         uint8 positioning;
-    }   
-    //mapping PlayerNFT ID with player properties
-    
+    }  
+    string[10] uris = [
+        "https://gateway.pinata.cloud/ipfs/QmPdEwjNdPr9yvommNmy87CvdoDiB9Kr3jpKGZVJM9XfjC/1.json", 
+        "https://gateway.pinata.cloud/ipfs/QmPdEwjNdPr9yvommNmy87CvdoDiB9Kr3jpKGZVJM9XfjC/2.json", 
+        "https://gateway.pinata.cloud/ipfs/QmPdEwjNdPr9yvommNmy87CvdoDiB9Kr3jpKGZVJM9XfjC/3.json",
+        "https://gateway.pinata.cloud/ipfs/QmPdEwjNdPr9yvommNmy87CvdoDiB9Kr3jpKGZVJM9XfjC/4.json",
+        "https://gateway.pinata.cloud/ipfs/QmPdEwjNdPr9yvommNmy87CvdoDiB9Kr3jpKGZVJM9XfjC/5.json",
+        "https://gateway.pinata.cloud/ipfs/QmPdEwjNdPr9yvommNmy87CvdoDiB9Kr3jpKGZVJM9XfjC/6.json",
+        "https://gateway.pinata.cloud/ipfs/QmPdEwjNdPr9yvommNmy87CvdoDiB9Kr3jpKGZVJM9XfjC/7.json",
+        "https://gateway.pinata.cloud/ipfs/QmPdEwjNdPr9yvommNmy87CvdoDiB9Kr3jpKGZVJM9XfjC/8.json",
+        "https://gateway.pinata.cloud/ipfs/QmPdEwjNdPr9yvommNmy87CvdoDiB9Kr3jpKGZVJM9XfjC/9.json",
+        "https://gateway.pinata.cloud/ipfs/QmPdEwjNdPr9yvommNmy87CvdoDiB9Kr3jpKGZVJM9XfjC/10.json"
+    ]; 
+    Counters.Counter private _tokenIdCounter;
+    address private EPNS_COMM_ADDRESS;
+    address payable admin;
+    uint256 public tid;
+    uint256 mintPrice;
     mapping (uint256 => Player) private playerInfo;
+
+    constructor() ERC721("FU3", "FU3") {
+        EPNS_COMM_ADDRESS = 0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa;
+        mintPrice = 0.0001 ether;
+        admin = payable(msg.sender);
+    }
     function pause() public onlyOwner {
         _pause();
     }
+
     function unpause() public onlyOwner {
         _unpause();
     }
 
-    function safeMint(address to, string memory uri, Player calldata _player) public onlyOwner {
+    function mint (uint8 _avatarIndex, Player calldata _player) external payable {
+        require (msg.value == mintPrice, "Price must be the asking one");
+        (bool success, ) = admin.call{ value: msg.value }("");
+        require(success, "Payment did not proceed");
+        safeMint(msg.sender, uris[_avatarIndex], _player);
+    }
+    function safeMint(address to, string memory uri, Player calldata _player) internal {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);

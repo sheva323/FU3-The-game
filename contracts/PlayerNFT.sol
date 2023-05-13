@@ -20,10 +20,13 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
     Counters.Counter private _tokenIdCounter;
 
     // EPNS COMM ADDRESS ON ETHEREUM goerli, CHECK THIS: https://docs.epns.io/developers/developer-tooling/epns-smart-contracts/epns-contract-addresses
-    address public EPNS_COMM_ADDRESS = 0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa;
+    //Goerli
+    address private EPNS_COMM_ADDRESS;
 
 
-    constructor() ERC721("FU3", "FU3") {}
+    constructor() ERC721("FU3", "FU3") {
+        EPNS_COMM_ADDRESS = 0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa;
+    }
 
     struct Player {
         uint8 ritm;
@@ -49,7 +52,7 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         _unpause();
     }
 
-    function safeMint(address to, string memory uri, Player memory _player) public onlyOwner {
+    function safeMint(address to, string memory uri, Player calldata _player) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);

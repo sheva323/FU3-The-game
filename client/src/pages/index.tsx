@@ -20,9 +20,16 @@ export default function Home() {
       ["uint256", "address", "string"],
       [tokenId, to, player]
     );
+    // let amount = 1;
+    // let to = '0xe7911A3B3647B4723320502B25B21aEe78eAfeb0';
+    // let nonce= 2;
+    // let hash = await ethers.utils.solidityKeccak256(
+    //   ["uint", "address", "uint"],
+    //   [amount, to, nonce]
+    // );
     console.log("hash= " + hash); // 0x8b939d18a1d2a152f82a5edb0af94e6b4bdb4b959f6f4863e73fa77931519371
 
-    firma = await signMessage(hash, address)
+    firma = await signMessage(hash.toString(), address?.toString())
     .then((signature) => {
       console.log("Firma:", signature);
       return signature;

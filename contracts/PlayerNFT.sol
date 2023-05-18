@@ -7,7 +7,8 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-
+import "hardhat/console.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 // PUSH Comm Contract Interface
 interface IPUSHCommInterface {
     function sendNotification(
@@ -39,7 +40,7 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
     string initialProps = "001001001001001001001001001001001001";
     //ritm,shoot,pass,dodge,defense,physic,stretch,stop,reflex,keeperSpeed,kick,positioning
     mapping(uint256 => string) private playerInfo;
-
+    event LogBytes32(bytes32 value);
     constructor() ERC721("FU3", "FU3") {
         EPNS_COMM_ADDRESS = 0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa;
         mintPrice = 0.00001 ether;
@@ -152,11 +153,28 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         string memory _player,
         bytes memory _signature
     ) {
+        emit LogBytes32(getMessageHash(_sender, _tokenId, _player));
         require(
             verify(_sender, _tokenId, _player, _signature) == true,
             "No permission granted"
         );
         _;
+    }
+    function printSignature (
+        address _to,
+        uint256 _tokenId,
+        string memory _player
+    ) external pure returns (bytes32) {
+        return getMessageHash(_to, _tokenId, _player );
+    }
+    function printAddressSign (
+        address _to,
+        uint256 _tokenId,
+        string memory _player,
+        bytes memory _signature
+    ) external pure returns (address) {
+       bytes32 messageHash = getMessageHash(_to, _tokenId, _player);
+       return recoverSigner(messageHash, _signature);
     }
     function verify(
         address _to,

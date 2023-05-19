@@ -5,3 +5,22 @@
 html {
   color-scheme: dark;
 }
+
+/* This will work on Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #576cbc;
+}
+
+body::-webkit-scrollbar {
+  width: 4px;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #576cbc;
+}
+
+@layer components {
+  .btn-primary {
+    @apply min-w-[7rem] py-1 rounded-full transition-all hover:brightness-125;
+  }
+}

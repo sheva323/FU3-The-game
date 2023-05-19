@@ -1,12 +1,55 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import Hero from '@/components/Hero';
+import PageLayout from '@/layouts/PageLayout';
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center">
-      <div className="relative flex flex-col place-items-center gap-8 before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[200px] after:w-[260px] after:translate-x-1/3 after:bg-gradient-conic   after:blur-2xl after:content-[''] before:from-transparent before:to-blue-700/10 after:from-sky-900 after:via-[#0141ff]/40 before:lg:h-[360px]">
-        <p className="text-3xl font-bold tracking-wider">{'<Ready to code />'}</p>
-        <ConnectButton />
+    <PageLayout title="Inicio" footer>
+      <Hero />
+      <div className="flex flex-row gap-20 p-16 bg-gradient-to-b from-black to-emerald-950">
+        <section className="w-full">
+          <div className="mb-16 flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <h4 className="text-2xl font-bold">Grandes retos</h4>
+              <span className="font-semibold text-gray-300">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+              </span>
+              <div className="h-[1px] bg-white w-9" />
+            </div>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint magni, aspernatur
+              dignissimos at blanditiis fugiat? Recusandae magnam modi, esse harum magni id
+              excepturi quisquam? Incidunt laudantium architecto omnis, est dicta, perferendis
+              eveniet odit harum tempora, dignissimos quo necessitatibus. Cupiditate, non!
+            </p>
+            <button className="btn-primary bg-cyan-600 ml-auto mr-10">Click me!</button>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <h4 className="text-2xl font-bold">Nunca pares de aprender</h4>
+              <span className="font-semibold text-gray-300">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+              </span>
+              <div className="h-[1px] bg-white w-9" />
+            </div>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint magni, aspernatur
+              dignissimos at blanditiis fugiat? Recusandae magnam modi, esse harum magni id
+              excepturi quisquam? Incidunt laudantium architecto omnis, est dicta, perferendis
+              eveniet odit harum tempora, dignissimos quo necessitatibus. Cupiditate, non!
+            </p>
+            <button className="btn-primary bg-cyan-600 ml-auto mr-10">Click me!</button>
+          </div>
+        </section>
+        <section className="w-full grid gap-8 grid-rows-3 grid-cols-2">
+          {Array(6)
+            .fill('test')
+            .map((_, index) => (
+              <div key={index} className="flex justify-center items-center bg-gray-800 rounded-md">
+                Card {index + 1}
+              </div>
+            ))}
+        </section>
       </div>
-    </main>
+    </PageLayout>
   );
 }

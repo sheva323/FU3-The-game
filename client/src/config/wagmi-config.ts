@@ -1,11 +1,11 @@
 import { getDefaultWallets } from '@rainbow-me/rainbowkit';
-import { configureChains, createClient } from 'wagmi';
+import { configureChains, createClient, goerli, sepolia } from 'wagmi';
 import { polygonMumbai } from 'wagmi/chains';
 // import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
 const { chains, provider } = configureChains(
-  [polygonMumbai],
+  [polygonMumbai, goerli, sepolia],
   [/* alchemyProvider({ apiKey: process.env.ALCHEMY_ID }), */ publicProvider()]
 );
 

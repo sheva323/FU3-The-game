@@ -3,9 +3,9 @@ import PageLayout from '@/layouts/PageLayout';
 
 export default function Home() {
   return (
-    <PageLayout title="Inicio" footer>
+    <PageLayout title="Inicio" bgGradient>
       <Hero />
-      <div className="flex flex-row gap-20 p-16 bg-gradient-to-b from-black to-emerald-950">
+      <div className="flex flex-row gap-20 p-16">
         <section className="w-full">
           <div className="mb-16 flex flex-col gap-4">
             <div className="flex flex-col gap-2">

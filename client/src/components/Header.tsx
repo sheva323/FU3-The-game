@@ -7,12 +7,16 @@ const links = [
     label: 'Inicio',
   },
   {
-    href: '/',
+    href: '/my-team',
+    label: 'Mi equipo',
+  },
+  {
+    href: '/play',
     label: 'Jugar',
   },
   {
     href: '/',
-    label: 'Liga',
+    label: 'Ligas',
   },
   {
     href: '/',
@@ -23,7 +27,11 @@ const links = [
 export default function Header() {
   return (
     <header className="bg-slate-900 z-10 h-16 fixed top-0 left-0 w-full max-w-screen- px-8 flex justify-between items-center">
-      <h1 className="font-bold text-2xl flex-1">FUT3 The Game</h1>
+      <div className="flex-1">
+        <Link href="/" className="block w-fit">
+          <h1 className="font-bold text-2xl">FU3 The Game</h1>
+        </Link>
+      </div>
       <nav>
         <ul className="flex gap-10">
           {links.map((link) => (

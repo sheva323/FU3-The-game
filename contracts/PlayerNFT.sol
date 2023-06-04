@@ -40,6 +40,8 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
     string initialProps = "001001001001001001001001001001001001";
     //ritm,shoot,pass,dodge,defense,physic,stretch,stop,reflex,keeperSpeed,kick,positioning
     mapping(uint256 => string) private playerInfo;
+    mapping(address => bool) private isPlayer;
+    mapping(address => uint256) private avatarIndex;
     event LogBytes32(bytes32 value);
     constructor() ERC721("FU3", "FU3") {
         EPNS_COMM_ADDRESS = 0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa;
@@ -60,9 +62,11 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         payable
     {
         require(msg.value == mintPrice, "Price must be the asking one");
+        require(!checkIsPlayer(msg.sender), "Each wallet can hold only 1 player");
         (bool success, ) = admin.call{value: msg.value}("");
         require(success, "Payment did not proceed");
         safeMint(msg.sender, uris[_avatarIndex], initialProps);
+        avatarIndex[msg.sender] = _avatarIndex;
     }
 
     function safeMint(
@@ -114,6 +118,9 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
     }
 
     //Player's Functions
+    function checkIsPlayer(address _address) public view returns(bool) {
+        return isPlayer[_address];
+    }
     function readProperties(uint256 _tokenId)
         external
         view
@@ -125,7 +132,6 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         );
         return playerInfo[_tokenId];
     }
-
     //Functions called by Owner to modify player stats
     function editPlayerStats(
         uint256 _tokenId,

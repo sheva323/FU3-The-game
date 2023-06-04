@@ -7,16 +7,16 @@ const links = [
     label: 'Inicio',
   },
   {
+    href: '/player',
+    label: 'Mi Jugador',
+  },
+  {
     href: '/my-team',
     label: 'Mi equipo',
   },
   {
     href: '/play',
     label: 'Jugar',
-  },
-  {
-    href: '/',
-    label: 'Ligas',
   },
   {
     href: '/',

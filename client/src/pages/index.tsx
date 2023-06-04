@@ -1,3 +1,5 @@
+import Hero from '@/components/Hero';
+import PageLayout from '@/layouts/PageLayout';
 import Notificacions from "@/components/notifications";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect } from "react";
@@ -52,19 +54,53 @@ export default function Home() {
     return signature;
   }
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center">
-      <div className="relative flex flex-col place-items-center gap-8 before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[200px] after:w-[260px] after:translate-x-1/3 after:bg-gradient-conic   after:blur-2xl after:content-[''] before:from-transparent before:to-blue-700/10 after:from-sky-900 after:via-[#0141ff]/40 before:lg:h-[360px]">
-        <p className="text-3xl font-bold tracking-wider">
-          {"<Ready to code />"}
-        </p>
-        <ConnectButton />
-        <Notificacions />
-
-        <button onClick={sign}>Sign</button>
+    <PageLayout title="Inicio" bgGradient>
+      <Hero />
+      <div className="flex flex-row gap-20 p-16">
+        <section className="w-full">
+          <div className="mb-16 flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <h4 className="text-2xl font-bold">Grandes retos</h4>
+              <span className="font-semibold text-gray-300">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+              </span>
+              <div className="h-[1px] bg-white w-9" />
+            </div>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint magni, aspernatur
+              dignissimos at blanditiis fugiat? Recusandae magnam modi, esse harum magni id
+              excepturi quisquam? Incidunt laudantium architecto omnis, est dicta, perferendis
+              eveniet odit harum tempora, dignissimos quo necessitatibus. Cupiditate, non!
+            </p>
+            <button className="btn-primary bg-cyan-600 ml-auto mr-10">Click me!</button>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <h4 className="text-2xl font-bold">Nunca pares de aprender</h4>
+              <span className="font-semibold text-gray-300">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+              </span>
+              <div className="h-[1px] bg-white w-9" />
+            </div>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint magni, aspernatur
+              dignissimos at blanditiis fugiat? Recusandae magnam modi, esse harum magni id
+              excepturi quisquam? Incidunt laudantium architecto omnis, est dicta, perferendis
+              eveniet odit harum tempora, dignissimos quo necessitatibus. Cupiditate, non!
+            </p>
+            <button className="btn-primary bg-cyan-600 ml-auto mr-10">Click me!</button>
+          </div>
+        </section>
+        <section className="w-full grid gap-8 grid-rows-3 grid-cols-2">
+          {Array(6)
+            .fill('test')
+            .map((_, index) => (
+              <div key={index} className="flex justify-center items-center bg-gray-800 rounded-md">
+                Card {index + 1}
+              </div>
+            ))}
+        </section>
       </div>
-    </main>
+    </PageLayout>
   );
 }
-
-0x7bc1da208612f249b6ca3ab9081c562ff8eadb84e267bca5954db19922755bbb;
-0x00833dc8ee33dc516ce0e71b0ea7a4e32d5e887d03bf48aff3f7a2782033f5f032570c372cc149258aee51fbfdf5843b373a5f5d451b4b7469a6a00ef36e71801c;

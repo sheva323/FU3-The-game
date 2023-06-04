@@ -1,14 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts@4.9.0/access/Ownable.sol";
-import "@openzeppelin/contracts@4.9.0/security/Pausable.sol";
-import "@openzeppelin/contracts@4.9.0/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
+// PUSH Comm Contract Interface
+interface IPUSHCommInterface {
+    function sendNotification(
+        address _channel,
+        address _recipient,
+        bytes calldata _identity
+    ) external;
+}
 contract PlatziLeague is Ownable, Pausable {
     using Counters for Counters.Counter;
     Counters.Counter private _teamsCounter;
     address private contractHolder;
+    address private EPNS_COMM_ADDRESS;
     string private name;
     uint256 private maxTeams;
     uint256 private minTeams;
@@ -48,6 +57,7 @@ contract PlatziLeague is Ownable, Pausable {
         minTeams = _min;
         prize = _prize;
         name = _name;
+        EPNS_COMM_ADDRESS = 0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa;
     }
 
     function addTeam(string calldata _teamName) external whenNotPaused {
@@ -55,7 +65,6 @@ contract PlatziLeague is Ownable, Pausable {
             _teamsCounter.current() < maxTeams,
             "The max amount of teams is reached"
         );
-        require(!isAddressInTeam(msg.sender) , "The player is already playing");
         _teamsCounter.increment();
         address[] memory players;
         Team memory newTeam = Team(
@@ -69,7 +78,6 @@ contract PlatziLeague is Ownable, Pausable {
 
     function addPlayer(uint256 _teamId) external {
         require(teams[_teamId].players.length < 5, "This team is full");
-        require(!isAddressInTeam(msg.sender) , "The player is already playing");
         teams[_teamId].players.push(msg.sender);
     }
 
@@ -108,21 +116,6 @@ contract PlatziLeague is Ownable, Pausable {
         return prize;
     }
 
-    function isAddressInTeam(address _addressToCheck)
-        public
-        view
-        returns (bool)
-    {
-        for (uint256 i = 1; i <= _teamsCounter.current(); i++) {
-            address[] memory players = teams[i].players;
-            for (uint256 j = 0; j < players.length; j++) {
-                if (players[j] == _addressToCheck) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     function startLeague() external onlyOwner {
         require(
@@ -161,6 +154,7 @@ contract PlatziLeague is Ownable, Pausable {
             teams[teamAId].points += 1; // Draw
             teams[teamBId].points += 1; // Draw
         }
+        
     }
 
     function getMatchByDate(uint256 _date) public view returns (uint256) {
@@ -205,7 +199,26 @@ contract PlatziLeague is Ownable, Pausable {
             (bool sent, ) = players[i].call{value: prizePerPlayer}("");
             require(sent, "Failed to send balance to winner");
             emit Payment(players[i], prizePerPlayer);
+            IPUSHCommInterface(EPNS_COMM_ADDRESS).sendNotification(
+            0x4EEe90A694935018609190490DF345b283897df4, // from channel
+            players[i], // to recipient, put address(this) in case you want Broadcast or Subset. For Targetted put the address to which you want to send
+            bytes(
+                string(
+                    // We are passing identity here: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
+                    abi.encodePacked(
+                        "0", // this is notification identity: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
+                        "+", // segregator
+                        "3", // this is payload type: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/payload (1, 3 or 4) = (Broadcast, targetted or subset)
+                        "+", // segregator
+                        "You received a prize !", // this is notificaiton title
+                        "+", // segregator
+                        "Congrats winner! " // notification body
+                    )
+                )
+            )
+        );
         }
+        
     }
 
     function returnFunds() external onlyOwner whenNotPaused {

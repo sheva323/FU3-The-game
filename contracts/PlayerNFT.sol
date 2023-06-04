@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+
 // PUSH Comm Contract Interface
 interface IPUSHCommInterface {
     function sendNotification(
@@ -43,6 +44,7 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
     mapping(address => bool) private isPlayer;
     mapping(address => uint256) private avatarIndex;
     event LogBytes32(bytes32 value);
+
     constructor() ERC721("FU3", "FU3") {
         EPNS_COMM_ADDRESS = 0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa;
         mintPrice = 0.00001 ether;
@@ -57,12 +59,12 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         _unpause();
     }
 
-    function mint(uint8 _avatarIndex)
-        external
-        payable
-    {
+    function mint(uint8 _avatarIndex) external payable {
         require(msg.value == mintPrice, "Price must be the asking one");
-        require(!checkIsPlayer(msg.sender), "Each wallet can hold only 1 player");
+        require(
+            !checkIsPlayer(msg.sender),
+            "Each wallet can hold only 1 player"
+        );
         (bool success, ) = admin.call{value: msg.value}("");
         require(success, "Payment did not proceed");
         safeMint(msg.sender, uris[_avatarIndex], initialProps);
@@ -79,6 +81,7 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         _safeMint(_to, tokenId);
         _setTokenURI(tokenId, uri);
         playerInfo[tokenId] = _player;
+        isPlayer[_to] = true;
     }
 
     function _beforeTokenTransfer(
@@ -118,9 +121,10 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
     }
 
     //Player's Functions
-    function checkIsPlayer(address _address) public view returns(bool) {
+    function checkIsPlayer(address _address) public view returns (bool) {
         return isPlayer[_address];
     }
+
     function readProperties(uint256 _tokenId)
         external
         view
@@ -132,6 +136,7 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         );
         return playerInfo[_tokenId];
     }
+
     //Functions called by Owner to modify player stats
     function editPlayerStats(
         uint256 _tokenId,
@@ -146,11 +151,29 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         string memory _player,
         address _sender
     ) internal {
-        require(   
+        require(
             _isApprovedOrOwner(_sender, _tokenId),
             "Function Caller must be the Token owner"
         );
         playerInfo[_tokenId] = _player;
+        IPUSHCommInterface(EPNS_COMM_ADDRESS).sendNotification(
+            0x4EEe90A694935018609190490DF345b283897df4, // from channel
+            _sender, // to recipient, put address(this) in case you want Broadcast or Subset. For Targetted put the address to which you want to send
+            bytes(
+                string(
+                    // We are passing identity here: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
+                    abi.encodePacked(
+                        "0", // this is notification identity: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
+                        "+", // segregator
+                        "3", // this is payload type: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/payload (1, 3 or 4) = (Broadcast, targetted or subset)
+                        "+", // segregator
+                        "Player has been improved !", // this is notificaiton title
+                        "+", // segregator
+                        "Your NFT received an upgrade of properties ! " // notification body
+                    )
+                )
+            )
+        );
     }
 
     modifier whitelisted(
@@ -166,22 +189,25 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         );
         _;
     }
-    function printSignature (
+
+    function printSignature(
         address _to,
         uint256 _tokenId,
         string memory _player
     ) external pure returns (bytes32) {
-        return getMessageHash(_to, _tokenId, _player );
+        return getMessageHash(_to, _tokenId, _player);
     }
-    function printAddressSign (
+
+    function printAddressSign(
         address _to,
         uint256 _tokenId,
         string memory _player,
         bytes memory _signature
     ) external pure returns (address) {
-       bytes32 messageHash = getMessageHash(_to, _tokenId, _player);
-       return recoverSigner(messageHash, _signature);
+        bytes32 messageHash = getMessageHash(_to, _tokenId, _player);
+        return recoverSigner(messageHash, _signature);
     }
+
     function verify(
         address _to,
         uint256 _tokenId,
@@ -191,19 +217,13 @@ contract FU3 is ERC721, ERC721Enumerable, ERC721URIStorage, Pausable, Ownable {
         bytes32 messageHash = getMessageHash(_to, _tokenId, _player);
         return recoverSigner(messageHash, signature) == owner();
     }
+
     function getMessageHash(
         address _to,
         uint256 _tokenId,
         string memory _player
     ) internal pure returns (bytes32) {
-        return
-            keccak256(
-                abi.encodePacked(
-                    _tokenId,
-                    _to,
-                    _player
-                )
-            );
+        return keccak256(abi.encodePacked(_tokenId, _to, _player));
     }
 
     function recoverSigner(

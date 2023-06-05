@@ -1,6 +1,5 @@
 import Hero from '@/components/Hero';
 import PageLayout from '@/layouts/PageLayout';
-import Notificacions from "@/components/notifications";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";

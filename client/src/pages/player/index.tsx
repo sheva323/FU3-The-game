@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import Hero from "@/components/Hero";
 import PageLayout from "@/layouts/PageLayout";
-import Notificacions from "@/components/notifications";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect } from "react";
 import { BigNumber, ethers } from "ethers";

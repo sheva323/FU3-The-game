@@ -29,28 +29,28 @@ export default function Home() {
     // .catch((error) => {
     //   console.log("Error:", error);
     // });
-    let signer;
-    const web3 = new Web3(window.ethereum);
-    await ethereum.request({ method: "eth_requestAccounts" });
-    const address = await web3.eth.getAccounts().then((res) => (signer = res));
-    firma = await web3.eth.personal.sign(hash.toString(), signer.toString());
+    // let signer;
+    // const web3 = new Web3(window.ethereum);
+    // await ethereum.request({ method: "eth_requestAccounts" });
+    // const address = await web3.eth.getAccounts().then((res) => (signer = res));
+    // firma = await web3.eth.personal.sign(hash.toString(), signer.toString());
 
-    console.log("firma= " + firma); //
+    // console.log("firma= " + firma); //
   };
   async function signMessage(hash: any, address: any) {
     // Conectar al proveedor de la billetera Injected Web3
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    // Solicitar al usuario que apruebe la conexión y acceda a su cuenta
-    await provider.send("eth_requestAccounts", []);
+    // // Solicitar al usuario que apruebe la conexión y acceda a su cuenta
+    // await provider.send("eth_requestAccounts", []);
 
-    // Obtener el objeto Signer de la dirección especificada
-    const signer = provider.getSigner(address);
+    // // Obtener el objeto Signer de la dirección especificada
+    // const signer = provider.getSigner(address);
 
-    // Firmar el mensaje
-    const signature = await signer.signMessage(hash);
+    // // Firmar el mensaje
+    // const signature = await signer.signMessage(hash);
 
-    return signature;
+    // return signature;
   }
   return (
     <PageLayout title="Inicio" bgGradient>

@@ -46,7 +46,7 @@ export default function JoinPage() {
       if(address) checkIfIsplayer(contract);
       const leagueDetails = await contract.getLeagueInfo() ;
       console.log(leagueDetails);
-      const league = {
+      const league : any = {
         name: leagueDetails[0],
         maxTeams:  BigNumber.from(leagueDetails[1]).toString(),
         minTeams:  BigNumber.from(leagueDetails[2]).toString(),

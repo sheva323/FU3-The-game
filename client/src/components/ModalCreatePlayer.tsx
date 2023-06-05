@@ -9,7 +9,7 @@ import { useAccount } from 'wagmi';
 import { ethers } from "ethers";
 
 type Props = {
-  selectedItem: string | null;
+  selectedItem: any;
   onClose: () => void;
 };
 const Avatars = [

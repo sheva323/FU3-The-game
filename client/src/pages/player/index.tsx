@@ -38,7 +38,7 @@ export default function Player() {
   const checkHasPlayer = async () => {
     try {
       const signer = await fetchSigner();
-      const contract = new ethers.Contract(playerAddress, PlayerABI, signer);
+      const contract = new ethers.Contract(playerAddress, PlayerABI, signer ? signer : undefined);
       let transaction = await contract.checkIsPlayer(address);
       setHasPlayer(transaction);
       let readTokenId = await contract.tokenOfOwnerByIndex(address, 0);

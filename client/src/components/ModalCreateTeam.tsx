@@ -38,7 +38,7 @@ export default function ModalCreateTeam({
     try {
       setLoading(true);
       const signer = await fetchSigner();
-      const contract = new ethers.Contract(leagueAddress, leagueABI, signer);
+      const contract = new ethers.Contract(leagueAddress, leagueABI, signer ? signer : undefined);
       let transaction = await contract.addTeam(teamName);
       console.log(transaction);
       onClose();

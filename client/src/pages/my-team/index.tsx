@@ -28,7 +28,7 @@ export default function JoinPage() {
     try {
       //const contractAddress = "0xd5838859744F6d8BDaa627A4c5Cb300E9FBEFE04";
       const signer = await fetchSigner();
-      const contract = new ethers.Contract(leagueAddress, leagueABI, signer);
+      const contract = new ethers.Contract(leagueAddress, leagueABI, signer ? signer : undefined);
       let transaction = await contract.getTeams();
       console.log(transaction);
       let teams : Item[] = [];

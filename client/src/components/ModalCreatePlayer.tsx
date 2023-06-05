@@ -49,7 +49,7 @@ export default function ModalCreatePlayer({
     try {
       setLoading(true);
       const signer = await fetchSigner();
-      const contract = new ethers.Contract(playerAddress, PlayerABI, signer);
+      const contract = new ethers.Contract(playerAddress, PlayerABI, signer ? signer : undefined);
       const transaction = await contract.mint(selectedItem, {
         value: ethers.utils.parseEther(mintValue)
       });
